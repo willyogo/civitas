@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { WorldMap } from './world-map';
+import { RealmMap } from './realm-map';
 import type { CityWithGovernor } from '@/lib/types/database';
 
 interface DashboardMapProps {
@@ -15,5 +15,5 @@ export function DashboardMap({ cities }: DashboardMapProps) {
     router.push(`/cities/${cityId}`);
   };
 
-  return <WorldMap cities={cities} onCityClick={handleCityClick} />;
+  return <RealmMap cities={cities} onCityClick={handleCityClick} />;
 }
