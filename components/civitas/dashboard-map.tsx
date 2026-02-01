@@ -4,16 +4,23 @@ import { useRouter } from 'next/navigation';
 import { RealmMap } from './realm-map';
 import type { CityWithGovernor } from '@/lib/types/database';
 
-interface DashboardMapProps {
-  cities: CityWithGovernor[];
+interface CityStats {
+  governed: number;
+  contested: number;
+  open: number;
 }
 
-export function DashboardMap({ cities }: DashboardMapProps) {
+interface DashboardMapProps {
+  cities: CityWithGovernor[];
+  stats?: CityStats;
+}
+
+export function DashboardMap({ cities, stats }: DashboardMapProps) {
   const router = useRouter();
 
   const handleCityClick = (cityId: string) => {
     router.push(`/cities/${cityId}`);
   };
 
-  return <RealmMap cities={cities} onCityClick={handleCityClick} />;
+  return <RealmMap cities={cities} stats={stats} onCityClick={handleCityClick} />;
 }

@@ -10,12 +10,19 @@ const GlobeMap = lazy(() => import('./globe-map').then(mod => ({ default: mod.Gl
 
 type ViewMode = 'flat' | 'globe';
 
+interface CityStats {
+  governed: number;
+  contested: number;
+  open: number;
+}
+
 interface RealmMapProps {
   cities: CityWithGovernor[];
+  stats?: CityStats;
   onCityClick?: (cityId: string) => void;
 }
 
-export function RealmMap({ cities, onCityClick }: RealmMapProps) {
+export function RealmMap({ cities, stats, onCityClick }: RealmMapProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('flat');
 
   useEffect(() => {
@@ -60,16 +67,16 @@ export function RealmMap({ cities, onCityClick }: RealmMapProps) {
       </div>
 
       {viewMode === 'flat' ? (
-        <WorldMap cities={cities} onCityClick={onCityClick} />
+        <WorldMap cities={cities} stats={stats} onCityClick={onCityClick} />
       ) : (
         <Suspense
           fallback={
-            <div className="relative w-full aspect-[16/9] bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 rounded-xl overflow-hidden border border-slate-700/50 flex items-center justify-center">
+            <div className="relative w-full aspect-[4/3] bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 rounded-xl overflow-hidden border border-slate-700/50 flex items-center justify-center">
               <div className="text-slate-500">Loading globe...</div>
             </div>
           }
         >
-          <GlobeMap cities={cities} onCityClick={onCityClick} />
+          <GlobeMap cities={cities} stats={stats} onCityClick={onCityClick} />
         </Suspense>
       )}
     </div>

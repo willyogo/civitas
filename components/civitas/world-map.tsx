@@ -22,12 +22,19 @@ function latLongToXY(lat: number | null, long: number | null): { x: number; y: n
   return { x, y };
 }
 
+interface CityStats {
+  governed: number;
+  contested: number;
+  open: number;
+}
+
 interface WorldMapProps {
   cities: CityWithGovernor[];
+  stats?: CityStats;
   onCityClick?: (cityId: string) => void;
 }
 
-export function WorldMap({ cities, onCityClick }: WorldMapProps) {
+export function WorldMap({ cities, stats, onCityClick }: WorldMapProps) {
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
   const [beaconPulses, setBeaconPulses] = useState<Set<string>>(new Set());
   const containerRef = useRef<HTMLDivElement>(null);
@@ -107,7 +114,7 @@ export function WorldMap({ cities, onCityClick }: WorldMapProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-[16/9] bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 rounded-xl overflow-hidden border border-slate-700/50 cursor-grab active:cursor-grabbing"
+      className="relative w-full aspect-[4/3] bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 rounded-xl overflow-hidden border border-slate-700/50 cursor-grab active:cursor-grabbing"
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -217,21 +224,24 @@ export function WorldMap({ cities, onCityClick }: WorldMapProps) {
         </div>
       </div>
 
-      <div className="absolute bottom-3 right-3 flex gap-3 text-[10px] pointer-events-none">
-        {[
-          { status: 'GOVERNED', color: 'bg-emerald-500', label: 'Governed' },
-          { status: 'CONTESTED', color: 'bg-amber-500', label: 'Contested' },
-          { status: 'OPEN', color: 'bg-slate-500', label: 'Open' },
-        ].map(item => (
-          <div key={item.status} className="flex items-center gap-1.5 text-slate-400">
-            <div className={cn('w-2 h-2 rounded-full', item.color)} />
-            <span>{item.label}</span>
+      <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-slate-900/90 to-transparent pointer-events-none">
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50" />
+            <span className="text-slate-300">Governed</span>
+            {stats && <span className="text-emerald-400 font-semibold ml-1">{stats.governed}</span>}
           </div>
-        ))}
-      </div>
-
-      <div className="absolute top-3 left-3 text-xs text-slate-500 font-mono pointer-events-none">
-        CIVITAS REALM
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50" />
+            <span className="text-slate-300">Contested</span>
+            {stats && <span className="text-amber-400 font-semibold ml-1">{stats.contested}</span>}
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-slate-500 shadow-sm shadow-slate-500/50" />
+            <span className="text-slate-300">Open</span>
+            {stats && <span className="text-slate-400 font-semibold ml-1">{stats.open}</span>}
+          </div>
+        </div>
       </div>
     </div>
   );

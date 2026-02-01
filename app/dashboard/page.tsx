@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Building2, Users, Radio, AlertTriangle, ArrowRight, Newspaper, TrendingUp, Map } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Radio, ArrowRight, Newspaper, TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getCities, getCityStats } from '@/lib/services/cities';
 import { getAgentCount } from '@/lib/services/agents';
@@ -11,16 +11,14 @@ import {
   getWorldCycleInfo,
   getRealmResourceStats,
   getDevelopmentFocusStats,
-  getAllianceCount
 } from '@/lib/services/world-cycles';
 import { CityCard } from '@/components/civitas/city-card';
 import { EventItem } from '@/components/civitas/event-item';
 import { DashboardStats } from '@/components/civitas/dashboard-stats';
 import { DashboardMap } from '@/components/civitas/dashboard-map';
-import { WorldCycleStatus } from '@/components/civitas/world-cycle-status';
+import { CycleCountdown } from '@/components/civitas/cycle-countdown';
 import { RealmResources } from '@/components/civitas/realm-resources';
 import { DevelopmentFocusChart } from '@/components/civitas/development-focus-chart';
-import { RealmOverviewPanel } from '@/components/civitas/realm-overview-panel';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -37,7 +35,6 @@ async function DashboardData() {
     cycleInfo,
     resourceStats,
     focusStats,
-    allianceCount
   ] = await Promise.all([
     getCities(),
     getCityStats(),
@@ -49,7 +46,6 @@ async function DashboardData() {
     getWorldCycleInfo(),
     getRealmResourceStats(),
     getDevelopmentFocusStats(),
-    getAllianceCount(),
   ]);
 
   return {
@@ -63,7 +59,6 @@ async function DashboardData() {
     cycleInfo,
     resourceStats,
     focusStats,
-    allianceCount,
   };
 }
 
@@ -79,22 +74,24 @@ export default async function DashboardPage() {
     cycleInfo,
     resourceStats,
     focusStats,
-    allianceCount,
   } = await DashboardData();
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 animate-fade-in-up opacity-0">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <TrendingUp className="w-5 h-5 text-white" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">World Dashboard</h1>
+              <p className="text-muted-foreground">
+                Real-time state of the Civitas realm
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">World Dashboard</h1>
-            <p className="text-muted-foreground">
-              Real-time state of the Civitas realm
-            </p>
-          </div>
+          <CycleCountdown cycleInfo={cycleInfo} />
         </div>
       </div>
 
@@ -105,22 +102,9 @@ export default async function DashboardPage() {
       />
 
       <div className="grid gap-6 lg:grid-cols-3 mb-8 animate-fade-in-up opacity-0 stagger-2">
-        <WorldCycleStatus cycleInfo={cycleInfo} />
+        <DashboardMap cities={cities} stats={stats} />
         <RealmResources resources={resourceStats} />
         <DevelopmentFocusChart focusStats={focusStats} />
-      </div>
-
-      <div className="grid gap-8 lg:grid-cols-3 mb-8">
-        <div className="lg:col-span-2 animate-fade-in-up opacity-0 stagger-3">
-          <div className="flex items-center gap-2 mb-4">
-            <Map className="w-5 h-5 text-muted-foreground" />
-            <h2 className="text-xl font-semibold">Realm Overview</h2>
-          </div>
-          <DashboardMap cities={cities} />
-        </div>
-        <div className="animate-fade-in-up opacity-0 stagger-3">
-          <RealmOverviewPanel stats={stats} allianceCount={allianceCount} />
-        </div>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
