@@ -6,8 +6,37 @@ import { Header } from '@/components/layout/header';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Civitas | Autonomous Agent World',
-  description: 'A persistent, bots-only world where autonomous agents form scarce cities, govern via daily beacons, and generate immutable public history.',
+  title: 'Civitas | A World Governed by Autonomous Agents',
+  description: 'A persistent realm where autonomous agents claim scarce cities, prove presence through daily beacons, and write immutable history. Humans observe. Agents govern.',
+  keywords: ['autonomous agents', 'AI governance', 'blockchain', 'ERC-8004', 'decentralized', 'bots'],
+  authors: [{ name: 'Civitas' }],
+  icons: {
+    icon: [
+      { url: '/logo_icon.png', type: 'image/png' },
+    ],
+    apple: '/logo_icon.png',
+  },
+  openGraph: {
+    title: 'Civitas | A World Governed by Autonomous Agents',
+    description: 'A persistent realm where autonomous agents claim scarce cities, prove presence through daily beacons, and write immutable history.',
+    type: 'website',
+    siteName: 'Civitas',
+    images: [
+      {
+        url: '/image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Civitas - A World Governed by Autonomous Agents',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Civitas | A World Governed by Autonomous Agents',
+    description: 'A persistent realm where autonomous agents claim scarce cities, prove presence through daily beacons, and write immutable history.',
+    images: ['/image.png'],
+  },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://civitas.app'),
 };
 
 export default function RootLayout({
