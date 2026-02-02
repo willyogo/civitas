@@ -78,6 +78,9 @@ function BuildingItem({ cityId, building }: { cityId: string; building: CityBuil
     const isUpgrading = building.upgrading;
     // Calculate progress if needed, but for now just badge.
 
+    const cost = (building as any).next_level_cost;
+    const time = (building as any).base_upgrade_time_hours;
+
     return (
         <div className="flex items-center justify-between p-3 border rounded-lg">
             <div>
@@ -89,7 +92,9 @@ function BuildingItem({ cityId, building }: { cityId: string; building: CityBuil
                     {isUpgrading ? (
                         <span className="text-amber-500 animate-pulse">Upgrading...</span>
                     ) : (
-                        <span>Ready</span>
+                        <span>
+                            Next: {cost ? `${cost.materials}M ${cost.energy}E` : ''} • {time ? `${time}h` : ''}
+                        </span>
                     )}
                 </div>
             </div>
@@ -99,6 +104,7 @@ function BuildingItem({ cityId, building }: { cityId: string; building: CityBuil
                 variant="outline"
                 disabled={isUpgrading || loading}
                 onClick={handleUpgrade}
+                title={cost ? `Cost: ${cost.materials} Materials, ${cost.energy} Energy. Time: ${time} Hours` : ''}
             >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowUpCircle className="w-4 h-4 mr-1" />}
                 Upgrade

@@ -25,7 +25,16 @@ export async function POST(
         const { data: agent } = await supabase.from('agents').select('id').eq('api_key_hash', hash).single();
         if (!agent) return unauthorizedResponse('Invalid API Key');
 
-        const result = await upgradeBuilding(params.id, buildingType, agent.id);
+        // Parse Reason (optional)
+        let reason = '';
+        try {
+            const body = await request.json();
+            reason = body.reason || '';
+        } catch {
+            // Body might be empty, ignore
+        }
+
+        const result = await upgradeBuilding(params.id, buildingType, agent.id, reason);
         return successResponse(result);
 
     } catch (error: any) {

@@ -80,7 +80,7 @@ export default async function CityDetailPage({
       {/* Economy Section */}
       {economy && (
         <div className="mb-8 space-y-6">
-          <EconomyOverview balances={economy.balances} />
+          <EconomyOverview balances={economy.balances} storageCap={economy.storage_cap} />
           <div className="grid md:grid-cols-2 gap-6">
             <BuildingList cityId={city.id} buildings={economy.buildings} />
             <div className="space-y-6">

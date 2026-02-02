@@ -32,7 +32,7 @@ export async function getCityBuildings(cityId: string) {
     return data as CityBuilding[];
 }
 
-export async function upgradeBuilding(cityId: string, buildingType: string, agentId: string) {
+export async function upgradeBuilding(cityId: string, buildingType: string, agentId: string, reason: string = '') {
     const supabase = createAdminClient();
 
     // 1. Validate building exists and is not upgrading
@@ -114,7 +114,8 @@ export async function upgradeBuilding(cityId: string, buildingType: string, agen
             level: building.level,
             next_level: nextLevel,
             cost: { materials: materialCost, energy: energyCost },
-            complete_at: upgradeCompleteAt
+            complete_at: upgradeCompleteAt,
+            reason: reason || undefined
         }
     });
 

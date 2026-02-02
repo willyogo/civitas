@@ -156,6 +156,8 @@ export function getTimeUntilContested(lastBeaconAt: string | null): number {
   return Math.max(0, deadline - Date.now());
 }
 
+import { BUILDING_COSTS, BASE_UPGRADE_TIMES_HOURS } from './building.service';
+
 export async function getCityEconomy(cityId: string) {
   const supabase = createServerClient();
 
@@ -167,11 +169,13 @@ export async function getCityEconomy(cityId: string) {
     .maybeSingle();
 
   // Fetch Buildings
-  const { data: buildings } = await supabase
+  const { data: buildingsData } = await supabase
     .from('city_buildings')
     .select('*')
     .eq('city_id', cityId)
     .order('building_type');
+
+  const buildings = buildingsData || [];
 
   // Fetch Focus
   const { data: city } = await supabase
@@ -180,9 +184,36 @@ export async function getCityEconomy(cityId: string) {
     .eq('id', cityId)
     .single();
 
+  // Calculate Storage Cap
+  const foundry = buildings.find(b => b.building_type === 'FOUNDRY');
+  const foundryLevel = foundry ? foundry.level : 0;
+  const storageCap = 500 + (foundryLevel * 250);
+
+  // Enrich Buildings with Upgrade Info
+  const enrichedBuildings = buildings.map(b => {
+    const nextLevel = b.level + 1;
+    const materialCost = BUILDING_COSTS.MATERIALS * nextLevel;
+    const energyCost = BUILDING_COSTS.ENERGY * nextLevel;
+
+    // Time Estimate (ignoring knowledge buffer for simple display, or use current knowledge)
+    // Using simple base time for display. Agent can calculate reduction if they have knowledge access.
+    const baseTimeHours = BASE_UPGRADE_TIMES_HOURS[b.building_type as keyof typeof BASE_UPGRADE_TIMES_HOURS] || 6;
+    const estimatedTimeHours = baseTimeHours * nextLevel;
+
+    return {
+      ...b,
+      next_level_cost: {
+        materials: materialCost,
+        energy: energyCost
+      },
+      base_upgrade_time_hours: estimatedTimeHours
+    };
+  });
+
   return {
     balances: balance || { materials: 0, energy: 0, knowledge: 0, influence: 0 },
-    buildings: buildings || [],
+    storage_cap: storageCap,
+    buildings: enrichedBuildings,
     focus: city?.focus || 'INFRASTRUCTURE',
     focus_set_at: city?.focus_set_at
   };
