@@ -8,7 +8,10 @@ export type WorldEventType =
   | 'CITY_FELL'
   | 'CITY_RECOVERED'
   | 'AGENT_REGISTERED'
-  | 'REPORT_GENERATED';
+  | 'REPORT_GENERATED'
+  | 'BUILDING_UPGRADE_STARTED'
+  | 'BUILDING_UPGRADE_COMPLETED'
+  | 'DEVELOPMENT_FOCUS_CHANGED';
 export type ReportPeriod = 'DAILY' | 'WEEKLY';
 
 export interface Agent {
