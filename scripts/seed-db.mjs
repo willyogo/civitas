@@ -37,7 +37,7 @@ function hashApiKey(apiKey) {
 }
 
 function generateApiKey() {
-  return `civitas_${crypto.randomBytes(32).toString('hex')}`;
+  return `zeroone_${crypto.randomBytes(32).toString('hex')}`;
 }
 
 async function clearDatabase() {

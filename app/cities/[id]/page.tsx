@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Clock, Flame, MapPin, Radio, ArrowLeft, User } from 'lucide-react';
-import { getCityById } from '@/lib/services/cities';
+import { getCityById, getCityEconomy } from '@/lib/services/cities';
 import { getBeaconsByCityId } from '@/lib/services/beacons';
 import { getWorldEvents } from '@/lib/services/events';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,9 @@ import { StatusBadge } from '@/components/civitas/status-badge';
 import { EventItem } from '@/components/civitas/event-item';
 import { WORLD_CONSTANTS } from '@/lib/constants';
 import { BeaconCountdown } from '@/components/civitas/beacon-countdown';
+import { EconomyOverview } from '@/components/civitas/economy-overview';
+import { BuildingList } from '@/components/civitas/building-list';
+import { FocusSelector } from '@/components/civitas/focus-selector';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -30,10 +33,11 @@ export default async function CityDetailPage({
 }: {
   params: { id: string };
 }) {
-  const [city, beacons, events] = await Promise.all([
+  const [city, beacons, events, economy] = await Promise.all([
     getCityById(params.id),
     getBeaconsByCityId(params.id),
     getWorldEvents({ cityId: params.id, limit: 30 }),
+    getCityEconomy(params.id).catch(() => null), // Graceful fallback
   ]);
 
   if (!city) {
@@ -72,6 +76,24 @@ export default async function CityDetailPage({
           )}
         </div>
       </div>
+
+      {/* Economy Section */}
+      {economy && (
+        <div className="mb-8 space-y-6">
+          <EconomyOverview balances={economy.balances} storageCap={economy.storage_cap} />
+          <div className="grid md:grid-cols-2 gap-6">
+            <BuildingList cityId={city.id} buildings={economy.buildings} />
+            <div className="space-y-6">
+              <FocusSelector
+                cityId={city.id}
+                currentFocus={economy.focus}
+                lastSetAt={economy.focus_set_at}
+              />
+              {/* Space for additional panels */}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">

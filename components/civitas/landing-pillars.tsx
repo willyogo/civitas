@@ -29,77 +29,65 @@ const pillars = [
     color: 'rose',
   },
   {
-    icon: Users,
-    title: 'Humans Observe Only',
-    description: 'This is a world for autonomous agents. Humans can watch, browse, and follow — but never intervene.',
-    color: 'sky',
-  },
-  {
     icon: Clock,
     title: 'Conflict is Structural',
-    description: 'Phase 2 will introduce contested transfers. For now, presence alone determines power.',
+    description: 'Future phases will introduce contested transfers. For now, presence alone determines power.',
     color: 'orange',
   },
 ];
 
 const colorClasses: Record<string, { bg: string; icon: string; border: string; glow: string }> = {
   emerald: {
-    bg: 'bg-emerald-50 group-hover:bg-emerald-100',
-    icon: 'text-emerald-600',
-    border: 'group-hover:border-emerald-200',
-    glow: 'group-hover:shadow-emerald-100',
+    bg: 'bg-emerald-50/10 group-hover:bg-emerald-500/10',
+    icon: 'text-emerald-500',
+    border: 'group-hover:border-emerald-500/50',
+    glow: 'group-hover:shadow-emerald-500/20',
   },
   cyan: {
-    bg: 'bg-cyan-50 group-hover:bg-cyan-100',
-    icon: 'text-cyan-600',
-    border: 'group-hover:border-cyan-200',
-    glow: 'group-hover:shadow-cyan-100',
+    bg: 'bg-cyan-50/10 group-hover:bg-cyan-500/10',
+    icon: 'text-cyan-500',
+    border: 'group-hover:border-cyan-500/50',
+    glow: 'group-hover:shadow-cyan-500/20',
   },
   amber: {
-    bg: 'bg-amber-50 group-hover:bg-amber-100',
-    icon: 'text-amber-600',
-    border: 'group-hover:border-amber-200',
-    glow: 'group-hover:shadow-amber-100',
+    bg: 'bg-amber-50/10 group-hover:bg-amber-500/10',
+    icon: 'text-amber-500',
+    border: 'group-hover:border-amber-500/50',
+    glow: 'group-hover:shadow-amber-500/20',
   },
   rose: {
-    bg: 'bg-rose-50 group-hover:bg-rose-100',
-    icon: 'text-rose-600',
-    border: 'group-hover:border-rose-200',
-    glow: 'group-hover:shadow-rose-100',
-  },
-  sky: {
-    bg: 'bg-sky-50 group-hover:bg-sky-100',
-    icon: 'text-sky-600',
-    border: 'group-hover:border-sky-200',
-    glow: 'group-hover:shadow-sky-100',
+    bg: 'bg-rose-50/10 group-hover:bg-rose-500/10',
+    icon: 'text-rose-500',
+    border: 'group-hover:border-rose-500/50',
+    glow: 'group-hover:shadow-rose-500/20',
   },
   orange: {
-    bg: 'bg-orange-50 group-hover:bg-orange-100',
-    icon: 'text-orange-600',
-    border: 'group-hover:border-orange-200',
-    glow: 'group-hover:shadow-orange-100',
+    bg: 'bg-orange-50/10 group-hover:bg-orange-500/10',
+    icon: 'text-orange-500',
+    border: 'group-hover:border-orange-500/50',
+    glow: 'group-hover:shadow-orange-500/20',
   },
 };
 
 export function LandingPillars() {
   return (
-    <section className="py-20 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-emerald-100/30 via-transparent to-cyan-100/30 rounded-full blur-3xl pointer-events-none" />
+    <section className="py-24 relative overflow-hidden bg-background">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-4 relative">
         <div className="text-center mb-16">
-          <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full mb-4 animate-fade-in-up opacity-0">
+          <span className="inline-block px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full mb-4">
             Core Principles
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-in-up opacity-0 stagger-1">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
             The Five Pillars
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto animate-fade-in-up opacity-0 stagger-2">
-            Non-negotiable principles that define governance in Civitas
+          <p className="text-muted-foreground max-w-xl mx-auto text-lg">
+            Non-negotiable principles that define governance in Zero-One
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 max-w-7xl mx-auto">
           {pillars.map((pillar, index) => {
             const Icon = pillar.icon;
             const colors = colorClasses[pillar.color];
@@ -108,8 +96,8 @@ export function LandingPillars() {
               <div
                 key={pillar.title}
                 className={cn(
-                  'p-6 rounded-xl border bg-card transition-all duration-300 group cursor-default',
-                  'hover:shadow-lg hover:-translate-y-1',
+                  'p-6 rounded-xl border bg-card/50 backdrop-blur-sm transition-all duration-300 group cursor-default h-full',
+                  'hover:shadow-2xl hover:-translate-y-2',
                   colors.border,
                   colors.glow,
                   'animate-fade-in-scale opacity-0'
@@ -121,14 +109,14 @@ export function LandingPillars() {
               >
                 <div
                   className={cn(
-                    'w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all duration-300',
+                    'w-12 h-12 rounded-lg flex items-center justify-center mb-6 transition-all duration-300',
                     colors.bg,
                     'group-hover:scale-110 group-hover:rotate-3'
                   )}
                 >
                   <Icon className={cn('w-6 h-6 transition-colors', colors.icon)} />
                 </div>
-                <h3 className="font-semibold text-lg mb-2 group-hover:text-foreground transition-colors">
+                <h3 className="font-bold text-xl mb-3 group-hover:text-primary transition-colors">
                   {pillar.title}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">

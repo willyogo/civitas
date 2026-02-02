@@ -51,29 +51,29 @@ export function HeroParticles() {
           }}
         >
           {particle.type === 'circle' && (
-            <div className="w-full h-full rounded-full bg-emerald-500/30" />
+            <div className="w-full h-full rounded-full bg-primary/30" />
           )}
           {particle.type === 'square' && (
             <div
-              className="w-full h-full bg-amber-500/30"
+              className="w-full h-full bg-accent/30"
               style={{ transform: 'rotate(45deg)' }}
             />
           )}
           {particle.type === 'hexagon' && (
-            <svg viewBox="0 0 24 24" className="w-full h-full fill-cyan-500/30">
+            <svg viewBox="0 0 24 24" className="w-full h-full fill-primary/20">
               <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5" />
             </svg>
           )}
         </div>
       ))}
 
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl animate-pulse-glow" />
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse-glow" />
       <div
-        className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-cyan-400/10 rounded-full blur-3xl animate-pulse-glow"
+        className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-accent/10 rounded-full blur-3xl animate-pulse-glow"
         style={{ animationDelay: '1s' }}
       />
       <div
-        className="absolute top-1/2 right-1/3 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl animate-pulse-glow"
+        className="absolute top-1/2 right-1/3 w-32 h-32 bg-primary/5 rounded-full blur-2xl animate-pulse-glow"
         style={{ animationDelay: '2s' }}
       />
     </div>

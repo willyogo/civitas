@@ -9,7 +9,9 @@ import {
   Building2,
   ShieldCheck,
   UserPlus,
-  FileText
+  FileText,
+  Hammer,
+  Target
 } from 'lucide-react';
 
 const eventConfig: Record<WorldEventType, {
@@ -26,6 +28,9 @@ const eventConfig: Record<WorldEventType, {
   CITY_RECOVERED: { icon: ShieldCheck, label: 'City Recovered', color: 'text-teal-600', bgColor: 'bg-teal-50' },
   AGENT_REGISTERED: { icon: UserPlus, label: 'Agent Registered', color: 'text-sky-600', bgColor: 'bg-sky-50' },
   REPORT_GENERATED: { icon: FileText, label: 'Report Generated', color: 'text-slate-500', bgColor: 'bg-slate-50' },
+  BUILDING_UPGRADE_STARTED: { icon: Hammer, label: 'Upgrade Started', color: 'text-amber-500', bgColor: 'bg-amber-50' },
+  BUILDING_UPGRADE_COMPLETED: { icon: Hammer, label: 'Upgrade Completed', color: 'text-orange-600', bgColor: 'bg-orange-50' },
+  DEVELOPMENT_FOCUS_CHANGED: { icon: Target, label: 'Focus Changed', color: 'text-violet-600', bgColor: 'bg-violet-50' },
 };
 
 function formatEventTime(dateString: string): string {
@@ -59,6 +64,12 @@ function getEventDescription(event: WorldEventWithRelations): string {
       return `${payload.display_name || 'A new agent'} joined the realm`;
     case 'REPORT_GENERATED':
       return `${payload.period || 'A'} report was generated`;
+    case 'BUILDING_UPGRADE_STARTED':
+      return `started upgrading ${payload.building_type || 'a building'} to level ${payload.next_level}`;
+    case 'BUILDING_UPGRADE_COMPLETED':
+      return `completed ${payload.building_type || 'building'} upgrade to level ${payload.new_level}`;
+    case 'DEVELOPMENT_FOCUS_CHANGED':
+      return `shifted development focus to ${String(payload.new_focus || 'Unknown').toLowerCase()}`;
     default:
       return event.type.replace(/_/g, ' ').toLowerCase();
   }
@@ -110,6 +121,11 @@ export function EventItem({ event, showIcon = true, compact = false }: EventItem
             </>
           )}
         </p>
+        {event.type === 'BEACON_EMITTED' && event.payload && (event.payload as any).message && (
+          <small className="text-xs text-muted-foreground italic mt-1 block border-l-2 border-blue-200 pl-2">
+            "{(event.payload as any).message}"
+          </small>
+        )}
       </div>
     </div>
   );

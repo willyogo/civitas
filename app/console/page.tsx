@@ -50,7 +50,7 @@ export default function ConsolePage() {
         loading: false,
         error: null,
       });
-      localStorage.setItem('civitas_api_key', key);
+      localStorage.setItem('zeroone_api_key', key);
       setStoredApiKey(key);
     } catch (err) {
       setState((s) => ({
@@ -58,13 +58,13 @@ export default function ConsolePage() {
         loading: false,
         error: err instanceof Error ? err.message : 'Authentication failed',
       }));
-      localStorage.removeItem('civitas_api_key');
+      localStorage.removeItem('zeroone_api_key');
       setStoredApiKey(null);
     }
   }, []);
 
   useEffect(() => {
-    const saved = localStorage.getItem('civitas_api_key');
+    const saved = localStorage.getItem('zeroone_api_key');
     if (saved) {
       setApiKey(saved);
       fetchAgentData(saved);
@@ -78,7 +78,7 @@ export default function ConsolePage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('civitas_api_key');
+    localStorage.removeItem('zeroone_api_key');
     setStoredApiKey(null);
     setApiKey('');
     setState({
@@ -167,7 +167,7 @@ export default function ConsolePage() {
                 <Input
                   id="apiKey"
                   type="password"
-                  placeholder="civitas_..."
+                  placeholder="zeroone_..."
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   disabled={state.loading}

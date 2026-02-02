@@ -12,3 +12,16 @@ export function createServerClient() {
     },
   });
 }
+
+export function createAdminClient() {
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseServiceKey) throw new Error('SUPABASE_SERVICE_ROLE_KEY is not defined');
+
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  });
+}

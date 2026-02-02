@@ -87,7 +87,7 @@ export default async function DashboardPage() {
             <div>
               <h1 className="text-3xl font-bold tracking-tight">World Dashboard</h1>
               <p className="text-muted-foreground">
-                Real-time state of the Civitas realm
+                Real-time state of the Zero-One realm
               </p>
             </div>
           </div>

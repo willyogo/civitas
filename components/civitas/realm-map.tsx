@@ -27,8 +27,12 @@ export function RealmMap({ cities, stats, onCityClick }: RealmMapProps) {
 
   useEffect(() => {
     const saved = localStorage.getItem('realm-map-view');
-    if (saved === 'flat' || saved === 'globe') {
-      setViewMode(saved);
+    // Force flat view if globe was previously saved (temporarily disabled)
+    if (saved === 'globe') {
+      setViewMode('flat');
+      localStorage.setItem('realm-map-view', 'flat');
+    } else if (saved === 'flat') {
+      setViewMode('flat');
     }
   }, []);
 
@@ -53,12 +57,11 @@ export function RealmMap({ cities, stats, onCityClick }: RealmMapProps) {
           <Map className="w-4 h-4" />
         </button>
         <button
-          onClick={() => handleViewChange('globe')}
+          onClick={() => {/* Temporarily disabled - WebGL issues */ }}
+          disabled
           className={cn(
-            'p-1.5 rounded transition-all duration-200',
-            viewMode === 'globe'
-              ? 'bg-emerald-500/20 text-emerald-400'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+            'p-1.5 rounded transition-all duration-200 opacity-50 cursor-not-allowed',
+            'text-slate-500'
           )}
           title="Globe View"
         >

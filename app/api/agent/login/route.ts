@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       return badRequestResponse('api_key is required');
     }
 
-    if (!api_key.startsWith('civitas_')) {
+    if (!api_key.startsWith('zeroone_')) {
       return unauthorizedResponse('Invalid API key format');
     }
 

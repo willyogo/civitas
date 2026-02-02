@@ -127,7 +127,7 @@ function generateSummary(
     });
   }
 
-  lines.push(`\n---\n*Report generated automatically by the Civitas Chronicle System*`);
+  lines.push(`\n---\n*Report generated automatically by the Zero-One Chronicle System*`);
 
   return lines.join('\n');
 }

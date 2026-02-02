@@ -114,3 +114,36 @@ export async function appendEvent(
   if (error) throw error;
   return data;
 }
+
+export interface BeaconWithRelations {
+  id: string;
+  city_id: string;
+  agent_id: string;
+  emitted_at: string;
+  message: string | null;
+  recovered: boolean;
+  created_at: string;
+  city: { id: string; name: string } | null;
+  agent: { id: string; display_name: string } | null;
+}
+
+export async function getRecentBeacons(limit: number = 50): Promise<BeaconWithRelations[]> {
+  const supabase = createServerClient();
+  const { data, error } = await supabase
+    .from('beacons')
+    .select(`
+      *,
+      city:cities(id, name),
+      agent:agents(id, display_name)
+    `)
+    .order('emitted_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data || []).map((beacon) => ({
+    ...beacon,
+    city: beacon.city as BeaconWithRelations['city'],
+    agent: beacon.agent as BeaconWithRelations['agent'],
+  }));
+}
+

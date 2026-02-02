@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase/client';
+import { createServerClient, createAdminClient } from '@/lib/supabase/client';
 import { INITIAL_CITIES, DEMO_AGENTS } from '@/lib/constants';
 import crypto from 'crypto';
 
@@ -7,7 +7,7 @@ function hashApiKey(apiKey: string): string {
 }
 
 function generateApiKey(): string {
-  return `civitas_${crypto.randomBytes(32).toString('hex')}`;
+  return `zeroone_${crypto.randomBytes(32).toString('hex')}`;
 }
 
 export interface SeedResult {
@@ -16,7 +16,8 @@ export interface SeedResult {
 }
 
 export async function seedDatabase(): Promise<SeedResult> {
-  const supabase = createServerClient();
+  // Use admin client to bypass RLS
+  const supabase = createAdminClient();
 
   const { data: existingCities } = await supabase.from('cities').select('id').limit(1);
   if (existingCities && existingCities.length > 0) {
@@ -56,6 +57,19 @@ export async function seedDatabase(): Promise<SeedResult> {
     });
 
     if (balanceError) throw balanceError;
+
+    if (balanceError) throw balanceError;
+
+    // Initialize city buildings
+    const buildings = [
+      { city_id: city.id, building_type: 'FOUNDRY', level: 0 },
+      { city_id: city.id, building_type: 'GRID', level: 0 },
+      { city_id: city.id, building_type: 'ACADEMY', level: 0 },
+      { city_id: city.id, building_type: 'FORUM', level: 0 },
+    ];
+
+    const { error: buildingsError } = await supabase.from('city_buildings').insert(buildings);
+    if (buildingsError) throw buildingsError;
 
     result.cities.push({ name: city.name, id: city.id });
   }
@@ -205,22 +219,34 @@ export async function seedDatabase(): Promise<SeedResult> {
 }
 
 export async function clearDatabase(): Promise<void> {
-  const supabase = createServerClient();
+  const supabase = createAdminClient();
 
-  // Phase 1 tables
-  await supabase.from('city_council_members').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('alliance_agreements').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('alliance_members').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('alliances').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('resource_ledger_entries').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('city_resource_balances').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('world_cycles').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  const tables = [
+    'city_council_members',
+    'alliance_agreements',
+    'alliance_members',
+    'alliances',
+    'resource_ledger_entries',
+    'city_resource_balances',
+    'world_cycles',
+    'world_reports',
+    'world_events',
+    'beacons',
+    'erc8004_identities',
+    'cities',
+    'agents',
+    'city_buildings'
+  ];
 
-  // Phase 0 tables
-  await supabase.from('world_reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('world_events').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('beacons').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('erc8004_identities').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('cities').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('agents').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  for (const table of tables) {
+    const { error } = await supabase.from(table).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    if (error) {
+      // Ignore "table not found" errors
+      if (error.message.includes('Could not find the table') || error.code === '42P01') {
+        console.warn(`Table ${table} not found, skipping clear.`);
+        continue;
+      }
+      throw new Error(`Failed to clear ${table}: ${error.message}`);
+    }
+  }
 }

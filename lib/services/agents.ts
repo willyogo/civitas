@@ -7,7 +7,7 @@ function hashApiKey(apiKey: string): string {
 }
 
 function generateApiKey(): string {
-  return `civitas_${crypto.randomBytes(32).toString('hex')}`;
+  return `zeroone_${crypto.randomBytes(32).toString('hex')}`;
 }
 
 export async function getAgents(): Promise<AgentPublic[]> {

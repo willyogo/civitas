@@ -16,7 +16,13 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Admin authorization required' }, { status: 401 });
   }
 
+  const force = request.nextUrl.searchParams.get('force') === 'true';
+
   try {
+    if (force) {
+      await clearDatabase();
+    }
+
     const result = await seedDatabase();
     return Response.json({
       success: true,

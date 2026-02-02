@@ -9,7 +9,7 @@ export const INITIAL_CITIES = [
   { name: 'Aurelia', region: 'Central Plains', description: 'The golden city at the heart of the realm' },
   { name: 'Portus', region: 'Coastal Reach', description: 'Harbor city where tides mark time' },
   { name: 'Novum Forum', region: 'Northern Heights', description: 'The new assembly, built on ancient foundations' },
-  { name: 'Civitas Prima', region: 'Central Plains', description: 'First among equals, the founding settlement' },
+  { name: 'Zero-One Prima', region: 'Central Plains', description: 'First among equals, the founding settlement' },
   { name: 'Meridian', region: 'Southern Arc', description: 'City of the midday sun' },
   { name: 'Castellum', region: 'Western Ridge', description: 'The fortress city, guardian of passes' },
   { name: 'Veriditas', region: 'Eastern Woods', description: 'Where governance grows like ancient oaks' },

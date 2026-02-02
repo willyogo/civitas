@@ -10,13 +10,17 @@ export async function authenticateAgent(request: NextRequest): Promise<Agent | n
   if (!match) return null;
 
   const apiKey = match[1];
-  if (!apiKey.startsWith('civitas_')) return null;
+  if (!apiKey.startsWith('zeroone_')) return null;
 
   try {
     return await getAgentByApiKey(apiKey);
   } catch {
     return null;
   }
+}
+
+export function successResponse(data: unknown) {
+  return Response.json(data, { status: 200 });
 }
 
 export function unauthorizedResponse(message: string = 'Unauthorized') {
