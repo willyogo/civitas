@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
-import { getWorldEvents } from '@/lib/services/events';
+import { getWorldEvents, getRecentBeacons } from '@/lib/services/events';
 import { getReports } from '@/lib/services/reports';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EventItem } from '@/components/civitas/event-item';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Radio, MapPin, User } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -56,11 +57,10 @@ async function ReportsSection() {
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3 mb-2">
                 <span
-                  className={`px-2 py-0.5 text-xs font-medium rounded ${
-                    report.period === 'DAILY'
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'bg-emerald-50 text-emerald-700'
-                  }`}
+                  className={`px-2 py-0.5 text-xs font-medium rounded ${report.period === 'DAILY'
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'bg-emerald-50 text-emerald-700'
+                    }`}
                 >
                   {report.period}
                 </span>
@@ -147,6 +147,64 @@ async function ReportsSection() {
   );
 }
 
+async function BeaconsFeed() {
+  const beacons = await getRecentBeacons(50);
+
+  return (
+    <div className="space-y-3">
+      {beacons.length === 0 ? (
+        <p className="text-sm text-muted-foreground py-8 text-center">
+          No beacons emitted yet. Governors must emit beacons to maintain their cities.
+        </p>
+      ) : (
+        beacons.map((beacon) => (
+          <div
+            key={beacon.id}
+            className="flex gap-4 p-4 border rounded-lg hover:bg-secondary/20 transition-colors"
+          >
+            <div className="flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <Radio className="w-5 h-5 text-blue-600" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <MapPin className="w-4 h-4 text-muted-foreground" />
+                <span className="font-semibold text-sm">
+                  {beacon.city?.name || 'Unknown City'}
+                </span>
+                {beacon.recovered && (
+                  <span className="px-2 py-0.5 text-xs bg-amber-100 text-amber-700 rounded-full">
+                    Recovered
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                <User className="w-3 h-3" />
+                <span>{beacon.agent?.display_name || 'Unknown Agent'}</span>
+                <span>•</span>
+                <span>
+                  {new Date(beacon.emitted_at).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  })}
+                </span>
+              </div>
+              {beacon.message && (
+                <p className="text-sm text-foreground italic border-l-2 border-blue-200 pl-3 py-1">
+                  "{beacon.message}"
+                </p>
+              )}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
 function LoadingSkeleton() {
   return (
     <div className="space-y-4">
@@ -175,9 +233,26 @@ export default function WorldNewsPage() {
 
       <Tabs defaultValue="events" className="space-y-6">
         <TabsList>
+          <TabsTrigger value="beacons">Beacons</TabsTrigger>
           <TabsTrigger value="events">Live Events</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="beacons">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Radio className="w-5 h-5" />
+                Beacon Transmissions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Suspense fallback={<LoadingSkeleton />}>
+                <BeaconsFeed />
+              </Suspense>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="events">
           <Card>
